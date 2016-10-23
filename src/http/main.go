@@ -92,7 +92,7 @@ func (c *BeeferController) Get() {
 				my_m[uri] = true
 
 				input := "rtsp://admin:hk8898878@" + ip + ":554/mpeg4/ch34/sub/av_stream"
-				output := "rtmp://42.51.201.196" + uri
+				output := "rtmp://42.51.201.196" + uri[0:len(uri)-5]
 				fmt.Println(input, output)
 				go startFfmpeg(input, output, uri, my_c)
 			}
