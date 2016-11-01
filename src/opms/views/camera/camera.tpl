@@ -44,7 +44,7 @@
       <ul class="breadcrumb pull-left">
         <li class="active"> 摄像头 </li>
       </ul>
-      <div class="pull-right"><a href="/camera/add" class="btn btn-success">添加新部门</a></div>
+      <div class="pull-right"><a href="/camera/add" class="btn btn-success">添加摄像头</a></div>
     </div>
     <!-- page heading end-->
     <!--body wrapper start-->
@@ -52,7 +52,7 @@
       <div class="row">
         <div class="col-sm-12">
           <section class="panel">
-            <header class="panel-heading"> 摄像头管理 / 总数：{{.countDepart}}<span class="tools pull-right"><a href="javascript:;" class="fa fa-chevron-down"></a>
+            <header class="panel-heading"> 总数：{{.countDepart}}<span class="tools pull-right"><a href="javascript:;" class="fa fa-chevron-down"></a>
               <!--a href="javascript:;" class="fa fa-times"></a-->
               </span> </header>
             <div class="panel-body">

@@ -11,15 +11,26 @@
     <!-- header section start-->
     <div class="header-section">
       <!--toggle button start-->
-      <a class="toggle-btn"><i class="fa fa-bars"></i></a> {{template "inc/user-info.tpl" .}} </div>
+      <a class="toggle-btn"><i class="fa fa-bars"></i></a> 
+	
+     <div class="menu-right">
+       <ul class="notification-menu">
+        <li> <a href="javascript:;" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> <img src="{{getAvatar .LoginAvatar}}" alt="{{.LoginUsername}}" /> {{.LoginUsername}} <span class="caret"></span> </a>
+        <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
+         <li><a href="/logout"><i class="fa fa-sign-out"></i> 退出</a></li>
+        </ul>
+        </li>
+       </ul>
+      </div>
+	
+	</div>
     <!-- header section end-->
     <!-- page heading start-->
     <div class="page-heading">
-      <h3> 员工管理 </h3>
+      <h3> 摄像头管理 </h3>
       <ul class="breadcrumb pull-left">
         <li> <a href="/user/show/{{.LoginUserid}}">OPMS</a> </li>
-        <li> <a href="/camera/manage">部门管理</a> </li>
-        <li class="active"> 部门 </li>
+        <li> <a href="/camera/manage">管理主页</a> </li>
       </ul>
       <div class="pull-right"><a href="/camera/add" class="btn btn-success">添加摄像头</a></div>
     </div>
