@@ -10,11 +10,17 @@ import (
 )
 
 type Departs struct {
-	Id     int64 `orm:"pk;column(departid);"`
-	Name   string
-	Desc   string
-	Dns    string
-	Status int
+	Id       int64 `orm:"pk;column(departid);"`
+	Name     string
+	Desc     string
+	Dns      string
+	Users    string
+	Pass     string
+	Channel  string
+	Address1 string
+	Address2 string
+	Playurl  string
+	Status   int
 }
 
 func (this *Departs) TableName() string {
@@ -30,9 +36,9 @@ func GetDeparts(id int64) (Departs, error) {
 	var err error
 	o := orm.NewOrm()
 
+	fmt.Println(id)
 	depart = Departs{Id: id}
 	err = o.Read(&depart)
-	//depart.Desc = depart.Dns
 
 	if err == orm.ErrNoRows {
 		return depart, nil
@@ -62,7 +68,15 @@ func UpdateDeparts(id int64, updDep Departs) error {
 
 	dep.Name = updDep.Name
 	dep.Desc = updDep.Desc
-	_, err := o.Update(&dep, "name", "desc")
+	dep.Dns = updDep.Dns
+	dep.Users = updDep.Users
+	dep.Pass = updDep.Pass
+	dep.Channel = updDep.Channel
+	dep.Address1 = updDep.Address1
+	dep.Address2 = updDep.Address2
+	dep.Playurl = updDep.Playurl
+
+	_, err := o.Update(&dep, "name", "desc", "dns", "users", "pass", "channel", "address1", "address2", "playurl")
 	return err
 }
 
@@ -75,6 +89,12 @@ func AddDeparts(updDep Departs) error {
 	dep.Name = updDep.Name
 	dep.Desc = updDep.Desc
 	dep.Dns = updDep.Dns
+	dep.Users = updDep.Users
+	dep.Pass = updDep.Pass
+	dep.Channel = updDep.Channel
+	dep.Address1 = updDep.Address1
+	dep.Address2 = updDep.Address2
+	dep.Playurl = updDep.Playurl
 	dep.Status = 1
 	_, err := o.Insert(dep)
 

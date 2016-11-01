@@ -826,11 +826,17 @@ INSERT INTO `pms_users_profile` VALUES ('1469024587469707428', '李浩', '1', '1
 
 DROP TABLE IF EXISTS `pms_cameras`;
 CREATE TABLE `pms_cameras` (
-  `departid` bigint(20) NOT NULL COMMENT '部门ID',
-  `name` varchar(30) DEFAULT NULL COMMENT '名称',
+  `departid` bigint(20) NOT NULL COMMENT '摄像头ID',
+  `name` varchar(30) DEFAULT NULL COMMENT '摄像头名称',
   `desc` varchar(255) DEFAULT NULL COMMENT '描述',
   `status` tinyint(1) DEFAULT '1' COMMENT '1正常2屏蔽',
-  `dns` varchar(255) DEFAULT NULL COMMENT 'DNS',
+  `dns` varchar(255) DEFAULT NULL COMMENT '录像机域名',
+  `users` varchar(255) DEFAULT NULL COMMENT '录像机用户名',
+  `pass` varchar(255) DEFAULT NULL COMMENT '录像机密码', 
+  `channel` varchar(255) DEFAULT NULL COMMENT '摄像头通道', 
+  `address1` varchar(255) DEFAULT NULL COMMENT '位置1', 
+  `address2` varchar(255) DEFAULT NULL COMMENT '位置2', 
+  `playurl` varchar(255) DEFAULT NULL COMMENT '播放地址', 
   PRIMARY KEY (`departid`),
   KEY `INDEX_NS` (`name`,`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='部门表';
@@ -838,8 +844,4 @@ CREATE TABLE `pms_cameras` (
 -- ----------------------------
 -- Records of pms_cameras
 -- ----------------------------
-INSERT INTO `pms_cameras` VALUES ('1462290164626094232', '运营部', '微信运营组，PC运营组', '1', 'abc');
-INSERT INTO `pms_cameras` VALUES ('1462290199274575028', '市场部', '前端销售，后端销售，商务组', '1', 'abc');
-INSERT INTO `pms_cameras` VALUES ('1462290127694985332', '研发部', '研发部，GO组，PHP组，UI组', '1', 'abc');
-INSERT INTO `pms_cameras` VALUES ('1462290228639093428', '行政部', '日常后勤，人事', '1', 'abc');
-INSERT INTO `pms_cameras` VALUES ('1462290248393045132', '财务部', '掌管经济大权', '1', 'abc');
+INSERT INTO `pms_cameras` VALUES ('100', '家里', '微信运营', '1', 'tnwl123456','admin','hk8898878','ch34','学校','班级','http://123.156.181.93:554');

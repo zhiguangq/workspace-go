@@ -50,6 +50,42 @@
                     <input type="text" name="dns" value="{{.dep.Dns}}" class="form-control" placeholder="请填写域名">
                   </div>
                 </div>
+				<div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">录像机用户名</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="users" value="{{.dep.Users}}" class="form-control" placeholder="请填写域名">
+                  </div>
+                </div>
+				<div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">录像机密码</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="pass" value="{{.dep.Pass}}" class="form-control" placeholder="请填写域名">
+                  </div>
+                </div>
+				<div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">摄像头通道</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="channel" value="{{.dep.Channel}}" class="form-control" placeholder="请填写域名">
+                  </div>
+                </div>
+				<div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">位置1</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="address1" value="{{.dep.Address1}}" class="form-control" placeholder="请填写域名">
+                  </div>
+                </div>
+				<div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">位置2</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="address2" value="{{.dep.Address2}}" class="form-control" placeholder="请填写域名">
+                  </div>
+                </div>
+				<div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">播放地址</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="playurl" value="{{.dep.Playurl}}" class="form-control" placeholder="请填写域名">
+                  </div>
+                </div>
                 <div class="form-group">
                   <label class="col-lg-2 col-sm-2 control-label"></label>
                   <div class="col-lg-10">

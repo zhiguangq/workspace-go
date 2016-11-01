@@ -18,7 +18,6 @@ type ManageDepartmentController struct {
 }
 
 func (this *ManageDepartmentController) Get() {
-	fmt.Println("ManageDepartmentController Get")
 	//权限检测
 	if !strings.Contains(this.GetSession("userPermission").(string), "department-manage") {
 		this.Abort("401")
@@ -113,17 +112,24 @@ func (this *AddDepartmentController) Post() {
 	desc := this.GetString("desc")
 
 	dns := this.GetString("dns")
-	if "" == name {
-		this.Data["json"] = map[string]interface{}{"code": 0, "message": "请填写域名"}
-		this.ServeJSON()
-		return
-	}
+	users := this.GetString("users")
+	pass := this.GetString("pass")
+	channel := this.GetString("channel")
+	address1 := this.GetString("address1")
+	address2 := this.GetString("address2")
+	playurl := this.GetString("playurl")
 
 	var dep Departs
-	dep.Id = utils.SnowFlakeId()
+	dep.Id = utils.SnowFlakeId() % 10000000
 	dep.Name = name
 	dep.Desc = desc
 	dep.Dns = dns
+	dep.Users = users
+	dep.Pass = pass
+	dep.Channel = channel
+	dep.Address1 = address1
+	dep.Address2 = address2
+	dep.Playurl = playurl
 	err := AddDeparts(dep)
 
 	if err == nil {
@@ -182,9 +188,24 @@ func (this *EditDepartmentController) Post() {
 	}
 	desc := this.GetString("desc")
 
+	dns := this.GetString("dns")
+	users := this.GetString("users")
+	pass := this.GetString("pass")
+	channel := this.GetString("channel")
+	address1 := this.GetString("address1")
+	address2 := this.GetString("address2")
+	playurl := this.GetString("playurl")
+
 	var dep Departs
 	dep.Name = name
 	dep.Desc = desc
+	dep.Dns = dns
+	dep.Users = users
+	dep.Pass = pass
+	dep.Channel = channel
+	dep.Address1 = address1
+	dep.Address2 = address2
+	dep.Playurl = playurl
 
 	err = UpdateDeparts(id, dep)
 
