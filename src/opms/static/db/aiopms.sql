@@ -822,3 +822,24 @@ INSERT INTO `pms_users_profile` VALUES ('1467191338628906628', '张三', '1', '1
 INSERT INTO `pms_users_profile` VALUES ('1468140265954907628', '李四', '1', '1994-08-11', 'cto@nahehuo.com', 'zs-milu365', '903561702', '13524396586', '021-84122521', '九新公路华西办公楼', 'lock', '135245132623', '1462290127694985332', '1462292053049130632', '5', '127.0.0.1', '1475204250');
 INSERT INTO `pms_users_profile` VALUES ('1468915433602979028', '朱笑天', '1', '1992-09-10', 'test@test.coma', 'zs-milu365', '903561702', '13524512531', '021-84122521', '外滩一号', 'lock', '135245132623', '1462290199274575028', '1462292041515367932', '2', '127.0.0.1', '1475051104');
 INSERT INTO `pms_users_profile` VALUES ('1469024587469707428', '李浩', '1', '1997-09-06', 'test@test.com', 'ls-milu365', '903561702', '13521234231', '021-84122521', '外滩一号', '李呀', '135245132623', '1462290228639093428', '1462292006260420932', '3', '127.0.0.1', '1475213790');
+
+
+DROP TABLE IF EXISTS `pms_cameras`;
+CREATE TABLE `pms_cameras` (
+  `departid` bigint(20) NOT NULL COMMENT '部门ID',
+  `name` varchar(30) DEFAULT NULL COMMENT '名称',
+  `desc` varchar(255) DEFAULT NULL COMMENT '描述',
+  `status` tinyint(1) DEFAULT '1' COMMENT '1正常2屏蔽',
+  `dns` varchar(255) DEFAULT NULL COMMENT 'DNS',
+  PRIMARY KEY (`departid`),
+  KEY `INDEX_NS` (`name`,`status`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='部门表';
+
+-- ----------------------------
+-- Records of pms_cameras
+-- ----------------------------
+INSERT INTO `pms_cameras` VALUES ('1462290164626094232', '运营部', '微信运营组，PC运营组', '1', 'abc');
+INSERT INTO `pms_cameras` VALUES ('1462290199274575028', '市场部', '前端销售，后端销售，商务组', '1', 'abc');
+INSERT INTO `pms_cameras` VALUES ('1462290127694985332', '研发部', '研发部，GO组，PHP组，UI组', '1', 'abc');
+INSERT INTO `pms_cameras` VALUES ('1462290228639093428', '行政部', '日常后勤，人事', '1', 'abc');
+INSERT INTO `pms_cameras` VALUES ('1462290248393045132', '财务部', '掌管经济大权', '1', 'abc');

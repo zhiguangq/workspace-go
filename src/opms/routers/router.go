@@ -3,6 +3,7 @@ package routers
 import (
 	"opms/controllers/albums"
 	"opms/controllers/businesstrips"
+	"opms/controllers/camera"
 	"opms/controllers/expenses"
 	"opms/controllers/goouts"
 	"opms/controllers/knowledges"
@@ -17,7 +18,14 @@ import (
 )
 
 func init() {
-	beego.Router("/", &users.MainController{})
+	//beego.Router("/", &users.MainController{})
+	beego.Router("/", &camera.ManageDepartmentController{})
+
+	//摄像头
+	beego.Router("/camera/manage", &camera.ManageDepartmentController{})
+	beego.Router("/camera/ajax/status", &camera.AjaxStatusDepartmentController{})
+	beego.Router("/camera/edit/:id", &camera.EditDepartmentController{})
+	beego.Router("/camera/add", &camera.AddDepartmentController{})
 
 	//用户
 	beego.Router("/user/manage", &users.ManageUserController{})

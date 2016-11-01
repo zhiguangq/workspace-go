@@ -217,6 +217,45 @@ $(function(){
         }
     });
 	
+	$('.js-camera-single').on('click', function(){
+    	var that = $(this);
+    	var status = that.attr('data-status')
+    	var id = that.attr('data-id');
+		$.post('/camera/ajax/status', { status: status, id: id },function(data){
+			dialogInfo(data.message)
+			if (data.code) {
+				that.attr('data-status', status == 2 ? 1 : 2).text(status == 2 ? '正常' : '屏蔽').parents('td').prev('td').text(status == 2 ? '屏蔽' : '正常');
+			} else {
+				
+			}
+			setTimeout(function(){ $('#dialogInfo').modal('hide'); }, 1000);
+		},'json');
+    });   
+	
+    $('#camera-form').validate({
+        ignore:'',        
+		rules : {
+			name:{required: true}
+        },
+        messages : {
+			name:{required: '请填写名称'}     
+        },
+        submitHandler:function(form) {
+            $(form).ajaxSubmit({
+                type:'POST',
+                dataType:'json',
+                success:function(data) {
+                    dialogInfo(data.message)
+                    if (data.code) {
+                       setTimeout(function(){window.location.href="/camera/manage"}, 2000);
+                    } else {
+                       setTimeout(function(){ $('#dialogInfo').modal('hide'); }, 1000);
+                    }
+                }
+            });
+        }
+    });
+	
 	$('.js-position-single').on('click', function(){
     	var that = $(this);
     	var status = that.attr('data-status')
