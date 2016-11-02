@@ -18,6 +18,10 @@ func main() {
 }
 
 var FilterUser = func(ctx *context.Context) {
+	// 如果是API请求，就直接进入路由，不进行过滤了
+	if ctx.Request.RequestURI == "/getCameras" {
+		return
+	}
 	_, ok := ctx.Input.Session("userLogin").(string)
 	if !ok && ctx.Request.RequestURI != "/login" {
 		ctx.Redirect(302, "/login")

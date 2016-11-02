@@ -46,6 +46,15 @@ func GetDeparts(id int64) (Departs, error) {
 	return depart, err
 }
 
+// 获取所有摄像头信息，相当于select * from pms_cameras
+func GetCameras() []Departs {
+	o := orm.NewOrm()
+	o.Using("default")
+	var deps []Departs
+	o.QueryTable(models.TableName("cameras")).All(&deps)
+	return deps
+}
+
 func GetDepartsName(id int64) string {
 	var err error
 	var name string

@@ -21,6 +21,9 @@ func init() {
 	//beego.Router("/", &users.MainController{})
 	beego.Router("/", &camera.ManageDepartmentController{})
 
+	// API
+	beego.Router("/getCameras", &camera.CameraAPiController{})
+
 	//摄像头
 	beego.Router("/camera/manage", &camera.ManageDepartmentController{})
 	beego.Router("/camera/ajax/status", &camera.AjaxStatusDepartmentController{})
