@@ -31,7 +31,6 @@ func init() {
 }
 
 func GetDeparts(id int64) (Departs, error) {
-	fmt.Println("GetDeparts")
 	var depart Departs
 	var err error
 	o := orm.NewOrm()
@@ -106,8 +105,6 @@ func AddDeparts(updDep Departs) error {
 	dep.Playurl = updDep.Playurl
 	dep.Status = 1
 	_, err := o.Insert(dep)
-
-	fmt.Println(dep.Dns)
 
 	return err
 }

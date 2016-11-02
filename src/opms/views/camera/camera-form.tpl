@@ -29,7 +29,6 @@
     <div class="page-heading">
       <h3> 摄像头管理 </h3>
       <ul class="breadcrumb pull-left">
-        <li> <a href="/user/show/{{.LoginUserid}}">OPMS</a> </li>
         <li> <a href="/camera/manage">管理主页</a> </li>
       </ul>
       <div class="pull-right"><a href="/camera/add" class="btn btn-success">添加摄像头</a></div>
@@ -44,19 +43,13 @@
             <div class="panel-body">
               <form class="form-horizontal adminex-form" id="camera-form">
                 <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">名称</label>
+                  <label class="col-sm-2 col-sm-2 control-label">摄像头名称</label>
                   <div class="col-sm-10">
-                    <input type="text" name="name" value="{{.dep.Name}}" class="form-control" placeholder="请填写名称">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">描述</label>
-                  <div class="col-sm-10">
-                    <textarea name="desc" placeholder="请填写描述" style="height:90px;" class="form-control">{{.dep.Desc}}</textarea>
+                    <input type="text" name="name" value="{{.dep.Name}}" class="form-control" placeholder="请填写摄像头名称">
                   </div>
                 </div>
 				<div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">域名</label>
+                  <label class="col-sm-2 col-sm-2 control-label">录像机域名</label>
                   <div class="col-sm-10">
                     <input type="text" name="dns" value="{{.dep.Dns}}" class="form-control" placeholder="请填写域名">
                   </div>
@@ -64,37 +57,43 @@
 				<div class="form-group">
                   <label class="col-sm-2 col-sm-2 control-label">录像机用户名</label>
                   <div class="col-sm-10">
-                    <input type="text" name="users" value="{{.dep.Users}}" class="form-control" placeholder="请填写域名">
+                    <input type="text" name="users" value="{{.dep.Users}}" class="form-control" placeholder="请填写录像机用户名">
                   </div>
                 </div>
 				<div class="form-group">
                   <label class="col-sm-2 col-sm-2 control-label">录像机密码</label>
                   <div class="col-sm-10">
-                    <input type="text" name="pass" value="{{.dep.Pass}}" class="form-control" placeholder="请填写域名">
+                    <input type="text" name="pass" value="{{.dep.Pass}}" class="form-control" placeholder="请填写录像机密码">
                   </div>
                 </div>
 				<div class="form-group">
                   <label class="col-sm-2 col-sm-2 control-label">摄像头通道</label>
                   <div class="col-sm-10">
-                    <input type="text" name="channel" value="{{.dep.Channel}}" class="form-control" placeholder="请填写域名">
+                    <input type="text" name="channel" value="{{.dep.Channel}}" class="form-control" placeholder="请填写摄像头通道">
                   </div>
                 </div>
 				<div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">位置1</label>
+                  <label class="col-sm-2 col-sm-2 control-label">摄像头位置1</label>
                   <div class="col-sm-10">
-                    <input type="text" name="address1" value="{{.dep.Address1}}" class="form-control" placeholder="请填写域名">
+                    <input type="text" name="address1" value="{{.dep.Address1}}" class="form-control" placeholder="请填写摄像头位置1">
                   </div>
                 </div>
 				<div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">位置2</label>
+                  <label class="col-sm-2 col-sm-2 control-label">摄像头位置2</label>
                   <div class="col-sm-10">
-                    <input type="text" name="address2" value="{{.dep.Address2}}" class="form-control" placeholder="请填写域名">
+                    <input type="text" name="address2" value="{{.dep.Address2}}" class="form-control" placeholder="请填写摄像头位置2">
                   </div>
                 </div>
 				<div class="form-group">
                   <label class="col-sm-2 col-sm-2 control-label">播放地址</label>
                   <div class="col-sm-10">
-                    <input type="text" name="playurl" value="{{.dep.Playurl}}" class="form-control" placeholder="请填写域名">
+                    <input type="text" name="playurl" value="{{.dep.Playurl}}" readonly="readonly" class="form-control" placeholder="不用填写，会自动生成">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">描述</label>
+                  <div class="col-sm-10">
+                    <textarea name="desc" placeholder="请填写描述" style="height:90px;" class="form-control">{{.dep.Desc}}</textarea>
                   </div>
                 </div>
                 <div class="form-group">
@@ -112,7 +111,6 @@
     </div>
     <!--body wrapper end-->
     <!--footer section start-->
-    {{template "inc/foot-info.tpl" .}}
     <!--footer section end-->
   </div>
   <!-- main content end-->

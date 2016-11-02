@@ -117,7 +117,6 @@ func (this *AddDepartmentController) Post() {
 	channel := this.GetString("channel")
 	address1 := this.GetString("address1")
 	address2 := this.GetString("address2")
-	playurl := this.GetString("playurl")
 
 	var dep Departs
 	dep.Id = utils.SnowFlakeId() % 10000000
@@ -129,7 +128,7 @@ func (this *AddDepartmentController) Post() {
 	dep.Channel = channel
 	dep.Address1 = address1
 	dep.Address2 = address2
-	dep.Playurl = playurl
+	dep.Playurl = beego.AppConfig.String("hlsurl") + dep.Dns + "_" + dep.Channel + ".m3u8"
 	err := AddDeparts(dep)
 
 	if err == nil {
@@ -194,7 +193,6 @@ func (this *EditDepartmentController) Post() {
 	channel := this.GetString("channel")
 	address1 := this.GetString("address1")
 	address2 := this.GetString("address2")
-	playurl := this.GetString("playurl")
 
 	var dep Departs
 	dep.Name = name
@@ -205,7 +203,7 @@ func (this *EditDepartmentController) Post() {
 	dep.Channel = channel
 	dep.Address1 = address1
 	dep.Address2 = address2
-	dep.Playurl = playurl
+	dep.Playurl = beego.AppConfig.String("hlsurl") + dep.Dns + "_" + dep.Channel + ".m3u8"
 
 	err = UpdateDeparts(id, dep)
 
