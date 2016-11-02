@@ -87,7 +87,7 @@
 				<div class="form-group">
                   <label class="col-sm-2 col-sm-2 control-label">播放地址</label>
                   <div class="col-sm-10">
-                    <input type="text" name="playurl" value="{{.dep.Playurl}}" readonly="readonly" class="form-control" placeholder="不用填写，会自动生成">
+                    <input type="text" name="playurl" value="{{.dep.Playurl}}" readonly="true" class="form-control" placeholder="不用填写，会自动生成">
                   </div>
                 </div>
                 <div class="form-group">

@@ -57,7 +57,6 @@ type AjaxStatusDepartmentController struct {
 }
 
 func (this *AjaxStatusDepartmentController) Post() {
-	fmt.Println("AjaxStatusDepartmentController")
 	//权限检测
 	if !strings.Contains(this.GetSession("userPermission").(string), "department-edit") {
 		this.Data["json"] = map[string]interface{}{"code": 0, "message": "无权设置"}

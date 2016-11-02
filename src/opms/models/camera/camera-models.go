@@ -35,7 +35,6 @@ func GetDeparts(id int64) (Departs, error) {
 	var err error
 	o := orm.NewOrm()
 
-	fmt.Println(id)
 	depart = Departs{Id: id}
 	err = o.Read(&depart)
 
