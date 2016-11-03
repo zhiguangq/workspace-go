@@ -127,7 +127,7 @@ func (this *AddDepartmentController) Post() {
 	dep.Channel = channel
 	dep.Address1 = address1
 	dep.Address2 = address2
-	dep.Playurl = beego.AppConfig.String("hlsurl") + dep.Dns + "_" + dep.Channel + ".m3u8"
+	dep.Playurl = beego.AppConfig.String("hlsurl") + dep.Dns + "_" + dep.Channel + "_" + fmt.Sprintf("%d", dep.Id) + ".m3u8"
 	err := AddDeparts(dep)
 
 	if err == nil {
@@ -202,7 +202,7 @@ func (this *EditDepartmentController) Post() {
 	dep.Channel = channel
 	dep.Address1 = address1
 	dep.Address2 = address2
-	dep.Playurl = beego.AppConfig.String("hlsurl") + dep.Dns + "_" + dep.Channel + ".m3u8"
+	dep.Playurl = beego.AppConfig.String("hlsurl") + dep.Dns + "_" + dep.Channel + "_" + fmt.Sprintf("%d", id) + ".m3u8"
 
 	err = UpdateDeparts(id, dep)
 

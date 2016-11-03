@@ -24,6 +24,9 @@ func init() {
 	// API
 	beego.Router("/getCameras", &camera.CameraAPiController{})
 
+	// HLS
+	beego.Router("/hls/*", &camera.HLSController{})
+
 	//摄像头
 	beego.Router("/camera/manage", &camera.ManageDepartmentController{})
 	beego.Router("/camera/ajax/status", &camera.AjaxStatusDepartmentController{})

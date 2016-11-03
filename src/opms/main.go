@@ -5,6 +5,7 @@ import (
 	"net/http"
 	_ "opms/initial"
 	_ "opms/routers"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
@@ -22,6 +23,12 @@ var FilterUser = func(ctx *context.Context) {
 	if ctx.Request.RequestURI == "/getCameras" {
 		return
 	}
+
+	// 如果是HLS请求，就直接进入路由，不进行过滤了
+	if strings.HasPrefix(ctx.Request.RequestURI, "/hls") {
+		return
+	}
+
 	_, ok := ctx.Input.Session("userLogin").(string)
 	if !ok && ctx.Request.RequestURI != "/login" {
 		ctx.Redirect(302, "/login")

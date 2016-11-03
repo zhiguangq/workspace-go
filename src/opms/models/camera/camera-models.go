@@ -1,6 +1,7 @@
 package camera
 
 import (
+	"errors"
 	"fmt"
 	"opms/models"
 	"opms/utils"
@@ -39,7 +40,7 @@ func GetDeparts(id int64) (Departs, error) {
 	err = o.Read(&depart)
 
 	if err == orm.ErrNoRows {
-		return depart, nil
+		return depart, errors.New("can not find")
 	}
 	return depart, err
 }
