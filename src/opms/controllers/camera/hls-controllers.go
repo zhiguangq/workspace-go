@@ -120,12 +120,12 @@ func (this *HLSController) Get() {
 			}
 			if err := isFfmpegStartUp(dns, channel); err == nil {
 				input := "rtsp://" + cam.Users + ":" + cam.Pass + "@" + ip + ":1554/mpeg4/" + channel + "/sub/av_stream"
-				output := "rtmp://" + beego.AppConfig.String("hlsServer") + rtmpURI
+				output := "rtmp://" + beego.AppConfig.String("hlsServer") + ":" + beego.AppConfig.String("hlsServerPort") + rtmpURI
 				startFfmpeg(input, output)
 				fmt.Println(input, "--", output)
 			}
 			m3u8 := "#EXTM3U\r\n#EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=200000\r\nhttp://" +
-				beego.AppConfig.String("hlsServer") + rtmpURI + ".m3u8"
+				beego.AppConfig.String("hlsServer") + ":" + beego.AppConfig.String("hlsServerPort") + rtmpURI + ".m3u8"
 			this.Ctx.WriteString(m3u8)
 			return
 		}
