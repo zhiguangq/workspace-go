@@ -2,10 +2,12 @@ package camera
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"net/http"
 	"opms/controllers"
 	. "opms/models/camera"
+	"os"
 	"os/exec"
 	"regexp"
 	"runtime"
@@ -30,11 +32,11 @@ func (r *myRegexp) FindStringSubmatchMap(s string) map[string]string {
 	return captures
 }
 
-func parseURI(uri string) (int64, string, string, bool) {
+func parseURI(uri string) (int64, string, string, string, bool) {
 	myExp := myRegexp{regexp.MustCompile(`/hls/(?P<first>[\w]+|[\d]+)_(?P<second>[\w]+|[\d])_(?P<third>[\d]+).m3u8`)}
 	mmap := myExp.FindStringSubmatchMap(uri)
 	id, _ := strconv.ParseInt(mmap["third"], 10, 64)
-	return id, mmap["first"], ("/hls/" + mmap["first"] + "_" + mmap["second"] + "_" + mmap["third"]), len(mmap) != 3
+	return id, mmap["first"], mmap["second"], ("/hls/" + mmap["first"] + "_" + mmap["second"] + "_" + mmap["third"]), len(mmap) != 3
 }
 
 func getIPAddress(str string) (string, bool) {
@@ -68,6 +70,25 @@ func getDdnsIP(dns string) (string, bool) {
 	return "", false
 }
 
+func isFfmpegStartUp(dns string, channel string) error {
+	if runtime.GOOS != "windows" {
+		mycmd, _ := os.Getwd()
+		cmd := exec.Command(mycmd+"/isFfmpegStartUp.sh", dns, channel)
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			fmt.Println("will not start")
+			return errors.New("will not start")
+		}
+		if len(out) > 0 {
+			fmt.Println(string(out))
+			return nil
+		}
+		fmt.Println("will not start")
+		return errors.New("will not start")
+	}
+	return errors.New("os system not support")
+}
+
 func startFfmpeg(input string, output string) {
 	if runtime.GOOS != "windows" {
 		cmd := exec.Command("/bin/ffmpeg", "-rtsp_transport", "tcp", "-i",
@@ -90,7 +111,7 @@ type HLSController struct {
 func (this *HLSController) Get() {
 	uri := this.Ctx.Request.URL.String()
 
-	if id, dns, rtmpURI, err := parseURI(uri); err != true {
+	if id, dns, channel, rtmpURI, err := parseURI(uri); err != true {
 		if ip, err := getDdnsIP(dns); err == true {
 			// 判断id是否存在
 			cam, err := GetDeparts(int64(id))
@@ -98,8 +119,8 @@ func (this *HLSController) Get() {
 				this.Abort("404")
 				return
 			}
-			if cam.Status == 1 { //
-				input := "rtsp://" + cam.Users + ":" + cam.Pass + "@" + ip + ":1554/mpeg4/" + cam.Channel + "/sub/av_stream"
+			if err := isFfmpegStartUp(dns, channel); err == nil {
+				input := "rtsp://" + cam.Users + ":" + cam.Pass + "@" + ip + ":1554/mpeg4/" + channel + "/sub/av_stream"
 				output := "rtmp://42.51.201.196" + rtmpURI
 				startFfmpeg(input, output)
 
