@@ -7,11 +7,13 @@ import (
 	"net/http"
 	"opms/controllers"
 	. "opms/models/camera"
-	"os"
 	"os/exec"
 	"regexp"
 	"runtime"
 	"strconv"
+	"strings"
+
+	"github.com/astaxie/beego"
 )
 
 type myRegexp struct{ *regexp.Regexp }
@@ -72,19 +74,16 @@ func getDdnsIP(dns string) (string, bool) {
 
 func isFfmpegStartUp(dns string, channel string) error {
 	if runtime.GOOS != "windows" {
-		mycmd, _ := os.Getwd()
-		cmd := exec.Command(mycmd+"/isFfmpegStartUp.sh", dns, channel)
-		out, err := cmd.CombinedOutput()
-		if err != nil {
-			fmt.Println("will not start")
-			return errors.New("will not start")
+		cmd := exec.Command("ps", "-ef")
+		out, _ := cmd.CombinedOutput()
+		lines := strings.Split(string(out), "\n")
+		for _, s := range lines {
+			if strings.Contains(s, dns) && strings.Contains(s, channel) {
+				fmt.Println("Has been start : " + s)
+				return errors.New("Has been started.")
+			}
 		}
-		if len(out) > 0 {
-			fmt.Println(string(out))
-			return nil
-		}
-		fmt.Println("will not start")
-		return errors.New("will not start")
+		return nil
 	}
 	return errors.New("os system not support")
 }
@@ -121,15 +120,14 @@ func (this *HLSController) Get() {
 			}
 			if err := isFfmpegStartUp(dns, channel); err == nil {
 				input := "rtsp://" + cam.Users + ":" + cam.Pass + "@" + ip + ":1554/mpeg4/" + channel + "/sub/av_stream"
-				output := "rtmp://42.51.201.196" + rtmpURI
+				output := "rtmp://" + beego.AppConfig.String("hlsServer") + rtmpURI
 				startFfmpeg(input, output)
-
 				fmt.Println(input, "--", output)
-				m3u8 := "#EXTM3U\r\n#EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=200000\r\nhttp://" +
-					"42.51.201.196" + rtmpURI + ".m3u8"
-				this.Ctx.WriteString(m3u8)
-				return
 			}
+			m3u8 := "#EXTM3U\r\n#EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=200000\r\nhttp://" +
+				beego.AppConfig.String("hlsServer") + rtmpURI + ".m3u8"
+			this.Ctx.WriteString(m3u8)
+			return
 		}
 	}
 	this.Abort("404")
