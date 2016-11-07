@@ -7,11 +7,13 @@ import (
 	"net/http"
 	"opms/controllers"
 	. "opms/models/camera"
+	"os"
 	"os/exec"
 	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 )
@@ -79,7 +81,7 @@ func isFfmpegStartUp(dns string, channel string) error {
 		lines := strings.Split(string(out), "\n")
 		for _, s := range lines {
 			if strings.Contains(s, dns) && strings.Contains(s, channel) {
-				fmt.Println("Has been start : " + s)
+				//fmt.Println("Has been start : " + s)
 				return errors.New("Has been started.")
 			}
 		}
@@ -88,16 +90,37 @@ func isFfmpegStartUp(dns string, channel string) error {
 	return errors.New("os system not support")
 }
 
-func startFfmpeg(input string, output string) {
+func startFfmpeg(input string, output string, logFile string) {
 	if runtime.GOOS != "windows" {
-		cmd := exec.Command("/bin/ffmpeg", "-rtsp_transport", "tcp", "-i",
-			input, "-vcodec", "copy", "-acodec", "copy", "-f", "flv", output)
-
 		go func() {
-			if err := cmd.Run(); err != nil {
-				fmt.Println(err)
+			cmd := exec.Command("/bin/ffmpeg", "-rtsp_transport", "tcp", "-i",
+				input, "-vcodec", "copy", "-acodec", "copy", "-f", "flv", output)
+			errLog, err := os.Create("log/" + logFile)
+			if err != nil {
+				fmt.Println("Can not create log file : " + logFile)
 				return
 			}
+			defer errLog.Close()
+			cmd.Stderr = errLog
+
+			err = cmd.Start()
+			if err != nil {
+				fmt.Println("Can not start cmd.")
+				return
+			}
+
+			var log_size int64 = 0
+			for {
+				time.Sleep(time.Second * 3)
+				info, _ := errLog.Stat()
+				if log_size == info.Size() {
+					fmt.Println("Log not change, going to kill cmd.")
+					cmd.Process.Kill()
+					break
+				}
+				log_size = info.Size()
+			}
+			cmd.Wait()
 			fmt.Println("end")
 		}()
 	}
@@ -122,7 +145,7 @@ func (this *HLSController) Get() {
 
 				input := "rtsp://" + cam.Users + ":" + cam.Pass + "@" + ip + ":1554/mpeg4/" + channel + "/sub/av_stream"
 				output := "rtmp://" + beego.AppConfig.String("hlsServer") + ":" + beego.AppConfig.String("hlsRtmpPort") + rtmpURI
-				startFfmpeg(input, output)
+				startFfmpeg(input, output, (dns + "_" + channel))
 				fmt.Println(input, "--", output)
 			}
 		}
