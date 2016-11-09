@@ -93,8 +93,8 @@ func isFfmpegStartUp(dns string, channel string) error {
 func startFfmpeg(input string, output string, logFile string) {
 	if runtime.GOOS != "windows" {
 		go func() {
-			cmd := exec.Command("/bin/ffmpeg", "-rtsp_transport", "tcp", "-i",
-				input, "-vcodec", "copy", "-acodec", "copy", "-f", "flv", output)
+			cmd := exec.Command("/bin/ffmpeg", "-rtsp_transport", "tcp", "-i", input,
+				"-f", "lavfi", "-i", "anullsrc", "-c:v", "copy", "-c:a", "aac", "-map", "0:v", "-map", "1:a", "-f", "flv", output)
 			errLog, err := os.Create("log/" + logFile)
 			if err != nil {
 				fmt.Println("Can not create log file : " + logFile)
