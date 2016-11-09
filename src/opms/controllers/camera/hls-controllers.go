@@ -111,7 +111,7 @@ func startFfmpeg(input string, output string, logFile string) {
 
 			var log_size int64 = 0
 			for {
-				time.Sleep(time.Second * 3)
+				time.Sleep(time.Second * 10)
 				info, _ := errLog.Stat()
 				if log_size == info.Size() {
 					fmt.Println("Log not change, going to kill cmd.")
