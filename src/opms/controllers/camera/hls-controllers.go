@@ -140,7 +140,7 @@ func startFfmpeg(input string, output string, logFile string) {
 			cmd := exec.Command("/bin/ffmpeg", "-re", "-rtsp_transport", "tcp", "-i", input,
 				"-re", "-f", "lavfi", "-i", "anullsrc", "-c:v", "copy", "-c:a", "aac", "-map", "0:v", "-map", "1:a", "-f", "flv", output)
 
-			if writeErrorLogFD, writeErrorLogErr := os.Create("log.txt"); writeErrorLogErr != nil {
+			if writeErrorLogFD, writeErrorLogErr := os.Create("log/" + logFile); writeErrorLogErr != nil {
 				fmt.Println("Can not create log file : log.txt")
 				return
 			} else {
@@ -148,7 +148,7 @@ func startFfmpeg(input string, output string, logFile string) {
 				cmd.Stderr = writeErrorLogFD
 			}
 
-			readErrorLogFD, readErrorLogErr := os.OpenFile("log.txt", os.O_RDONLY, 0660)
+			readErrorLogFD, readErrorLogErr := os.OpenFile(("log/" + logFile), os.O_RDONLY, 0660)
 			if readErrorLogErr != nil {
 				fmt.Println("Can not create log file : log.txt")
 				return
