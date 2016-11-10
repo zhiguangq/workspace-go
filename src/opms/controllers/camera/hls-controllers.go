@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"opms/controllers"
 	. "opms/models/camera"
@@ -34,6 +35,15 @@ func (r *myRegexp) FindStringSubmatchMap(s string) map[string]string {
 		captures[name] = match[i]
 	}
 	return captures
+}
+
+func getInt(str string) (int64, error) {
+	intExp := myRegexp{regexp.MustCompile(`(?P<first>[\d]+)`)}
+	mmap := intExp.FindStringSubmatchMap(str)
+	if len(mmap) == 0 {
+		return 0, errors.New("empty")
+	}
+	return strconv.ParseInt(mmap["first"], 10, 64)
 }
 
 func parseURI(uri string) (int64, string, string, string, bool) {
@@ -90,38 +100,88 @@ func isFfmpegStartUp(dns string, channel string) error {
 	return errors.New("os system not support")
 }
 
+func parseLiveStream(line string) (int64, int64) {
+	var frames, bitrates int64
+	stringMap := strings.Split(line, "=")                                   // 用 "=" 分隔每一列
+	if len(stringMap) == 8 && strings.Compare(stringMap[0], "frame") == 0 { // 有8列，且第一列是"frame" 就是正常的直播流日志
+		for i, v := range stringMap {
+			if i == 1 { //  frame value
+				if thisFrames, err := getInt(v); err == nil {
+					frames = thisFrames
+				}
+			}
+			if i == 6 { // bitrate value
+				if thisBitrate, err := getInt(v); err == nil {
+					bitrates = thisBitrate
+				}
+			}
+		}
+	}
+	return frames, bitrates // 返回 总的视频帧数 码率
+}
+
+func catLogFile(reader *bufio.Reader) (int64, int64, int64) {
+	var frames, bitrates int64 = 0, 0
+	var count int64 = 0
+	for {
+		line, err := reader.ReadString('\r') // 读取 \r 分隔的行
+		if err == io.EOF {
+			break
+		}
+		count++
+		frames, bitrates = parseLiveStream(strings.Replace(line, " ", "", -1))
+	}
+	return frames, bitrates, count
+}
+
 func startFfmpeg(input string, output string, logFile string) {
 	if runtime.GOOS != "windows" {
 		go func() {
-			cmd := exec.Command("/bin/ffmpeg", "-rtsp_transport", "tcp", "-i", input,
-				"-f", "lavfi", "-i", "anullsrc", "-c:v", "copy", "-c:a", "aac", "-map", "0:v", "-map", "1:a", "-f", "flv", output)
-			errLog, err := os.Create("log/" + logFile)
-			if err != nil {
-				fmt.Println("Can not create log file : " + logFile)
+			cmd := exec.Command("/bin/ffmpeg", "-re", "-rtsp_transport", "tcp", "-i", input,
+				"-re", "-f", "lavfi", "-i", "anullsrc", "-c:v", "copy", "-c:a", "aac", "-map", "0:v", "-map", "1:a", "-f", "flv", output)
+
+			if writeErrorLogFD, writeErrorLogErr := os.Create("log.txt"); writeErrorLogErr != nil {
+				fmt.Println("Can not create log file : log.txt")
+				return
+			} else {
+				defer writeErrorLogFD.Close()
+				cmd.Stderr = writeErrorLogFD
+			}
+
+			readErrorLogFD, readErrorLogErr := os.OpenFile("log.txt", os.O_RDONLY, 0660)
+			if readErrorLogErr != nil {
+				fmt.Println("Can not create log file : log.txt")
 				return
 			}
-			defer errLog.Close()
-			cmd.Stderr = errLog
+			defer readErrorLogFD.Close()
+			reader := bufio.NewReader(readErrorLogFD)
 
-			err = cmd.Start()
-			if err != nil {
+			if cmd.Start() != nil { // 启动进程
 				fmt.Println("Can not start cmd.")
 				return
 			}
 
-			var log_size int64 = 0
-			for {
-				time.Sleep(time.Second * 10)
-				info, _ := errLog.Stat()
-				if log_size == info.Size() {
+			var lastFrames, lastBitrates int64 = 0, 0
+			var continuedNoLogTimes int = 0
+			for { // 检测ffmpeg拉流是否正常
+				if frames, bitrates, count := catLogFile(reader); count != 0 && frames > lastFrames {
+					lastFrames = frames
+					lastBitrates = bitrates
+					continuedNoLogTimes = 0
+				} else {
+					continuedNoLogTimes++ // 读不到新的log 或者视频没有数据
+				}
+				fmt.Println(lastFrames, lastBitrates, continuedNoLogTimes)
+				time.Sleep(time.Second * 1)
+
+				if continuedNoLogTimes >= 10 { // 10秒都没有数据，或没有视频流，退出
 					fmt.Println("Log not change, going to kill cmd.")
 					cmd.Process.Kill()
 					break
 				}
-				log_size = info.Size()
 			}
+
 			cmd.Wait()
-			fmt.Println("end")
 		}()
 	}
 }
