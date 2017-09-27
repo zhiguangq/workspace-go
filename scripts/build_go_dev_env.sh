@@ -4,7 +4,7 @@ echo "Begin to build go develop env"
 
 if [ ! -f "go1.7.linux-amd64.tar.gz" ];then
 echo "download go pkg"
-wget http://www.golangtc.com/static/go/1.7/go1.7.linux-amd64.tar.gz
+curl -O https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz
 fi
 
 if [ ! -d "go" ];then
